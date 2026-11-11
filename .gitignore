@@ -20,8 +20,6 @@ logs
 .eslintcache
 
 # Local env files
-.env
-.env.*
 !.env.example
 
 # Template
@@ -43,3 +41,4 @@ template/pnpm-lock.yaml
 .starters/default/pnpm-workspace.yaml
 .starters/i18n/pnpm-lock.yaml
 .starters/i18n/pnpm-workspace.yaml
+config.bat

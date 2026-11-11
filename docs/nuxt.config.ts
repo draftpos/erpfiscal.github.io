@@ -21,6 +21,9 @@ export default defineNuxtConfig({
   site: {
     name: 'HavanoZimra Cloud API',
   },
+  robots: {
+    robotsTxt: false,
+  },
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
   },

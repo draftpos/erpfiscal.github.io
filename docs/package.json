@@ -3,8 +3,8 @@
   "description": "Official documentation for Docus, also used as playground.",
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev"
+    "build": "node init && nuxt build",
+    "dev": "node init && nuxt dev"
   },
   "dependencies": {
     "@nuxt/ui": "^4.0.1",
