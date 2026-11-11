@@ -1,0 +1,247 @@
+openapi: 3.0.3
+info:
+  title: HavanoZimra Cloud API
+  description: |
+    Official REST API documentation for HavanoZimra Cloud. Connect your ERP, Point of Sale,
+    or billing systems to the Zimbabwe Revenue Authority (ZIMRA) Fiscal Data Management System (FDMS).
+  version: 1.0.0
+  contact:
+    name: Havano Systems Support
+    url: https://havano.co.zw
+servers:
+  - url: https://your-site-name
+    description: HavanoZimra Cloud Instance
+paths:
+  /api/method/havanozimracloud.api.token:
+    post:
+      summary: Get CSRF Token
+      description: Generates (if not already generated) and returns a session CSRF token required for subsequent requests.
+      operationId: getCsrfToken
+      responses:
+        '200':
+          description: Successful token issuance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: a9f8e7c2f23d46a89c0b1e4f5a6b7c8d9e0f
+                  message:
+                    type: string
+                    example: a9f8e7c2f23d46a89c0b1e4f5a6b7c8d9e0f
+    get:
+      summary: Get CSRF Token (GET)
+      description: Alternative GET request for retrieving session CSRF token.
+      operationId: getCsrfTokenGet
+      responses:
+        '200':
+          description: Successful token issuance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: a9f8e7c2f23d46a89c0b1e4f5a6b7c8d9e0f
+
+  /api/method/havanozimracloud.api.pingzimra:
+    post:
+      summary: Ping ZIMRA Server
+      description: Pings the ZIMRA server to check connectivity and verify active device registration status.
+      operationId: pingZimra
+      security:
+        - FrappeTokenAuth: []
+          CsrfTokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - device_sn
+              properties:
+                device_sn:
+                  type: string
+                  description: The ZIMRA fiscal device serial number to ping.
+                  example: "1234567890"
+      responses:
+        '200':
+          description: Ping response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ResponseCode:
+                    type: string
+                    example: "0"
+                  ResponseMessage:
+                    type: string
+                    example: Ping successful
+                  DeviceSN:
+                    type: string
+                    example: "1234567890"
+
+  /api/method/havanozimracloud.api.sendinvoice:
+    post:
+      summary: Send Invoice or Credit Note
+      description: Sends a fiscal sales invoice (`invoice_flag=0`) or credit note (`invoice_flag=1`) to ZIMRA via the configured device.
+      operationId: sendInvoice
+      security:
+        - FrappeTokenAuth: []
+          CsrfTokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - device_sn
+                - add_customer
+                - invoice_flag
+                - currency
+                - invoice_number
+                - customer_name
+                - trade_name
+                - customer_vat_number
+                - customer_address
+                - customer_telephone_number
+                - customer_tin
+                - customer_province
+                - customer_street
+                - customer_houseNo
+                - customer_city
+                - customer_email
+                - items_xml
+              properties:
+                device_sn:
+                  type: string
+                  description: Device Serial Number assigned by ZIMRA.
+                  example: "1234567890"
+                add_customer:
+                  type: integer
+                  enum: [0, 1]
+                  description: Add customer flag (1 = Yes, 0 = No).
+                  example: 0
+                invoice_flag:
+                  type: integer
+                  enum: [0, 1]
+                  description: Transaction type (0 = Sales Invoice, 1 = Credit Note).
+                  example: 0
+                currency:
+                  type: string
+                  description: Three-letter currency code (e.g. USD, ZIG).
+                  example: "USD"
+                invoice_number:
+                  type: string
+                  description: Unique invoice number from internal ERP/POS.
+                  example: "INV-2026-0001"
+                customer_name:
+                  type: string
+                  description: Full legal name of the customer.
+                  example: "John Doe"
+                trade_name:
+                  type: string
+                  description: Customer trading name.
+                  example: "JD Traders"
+                customer_vat_number:
+                  type: string
+                  description: Customer ZIMRA VAT number.
+                  example: "12345678"
+                customer_address:
+                  type: string
+                  description: Physical address of the customer.
+                  example: "123 Market Street"
+                customer_telephone_number:
+                  type: string
+                  description: Customer telephone number.
+                  example: "+263771234567"
+                customer_tin:
+                  type: string
+                  description: Taxpayer Identification Number (TIN/BP).
+                  example: "87654321"
+                customer_province:
+                  type: string
+                  description: Customer province.
+                  example: "Harare"
+                customer_street:
+                  type: string
+                  description: Customer street address.
+                  example: "Market Street"
+                customer_houseNo:
+                  type: string
+                  description: Customer house or building number.
+                  example: "12"
+                customer_city:
+                  type: string
+                  description: Customer city or town.
+                  example: "Harare"
+                customer_email:
+                  type: string
+                  format: email
+                  description: Customer email address.
+                  example: "john@example.com"
+                invoice_comment:
+                  type: string
+                  description: Note or explanation (mandatory for credit notes).
+                  example: "Damaged goods returned"
+                original_invoice_no:
+                  type: string
+                  description: Original invoice number (mandatory for credit notes).
+                  example: "INV-2026-0001"
+                global_invoice_no:
+                  type: string
+                  description: ZIMRA receipt number of original invoice (mandatory for credit notes).
+                  example: "100452"
+                items_xml:
+                  type: string
+                  description: XML formatted list of invoice items with tax categories.
+                  example: "<ITEMS><ITEM><HH>1</HH><ITEMCODE>99001868</ITEMCODE><ITEMNAME>Milo 500g</ITEMNAME><ITEMNAME2>Milo</ITEMNAME2><QTY>1</QTY><PRICE>6.10</PRICE><TOTAL>6.10</TOTAL><VAT>0.80</VAT><VATR>0.15</VATR><VNAME>VAT</VNAME></ITEM></ITEMS>"
+      responses:
+        '200':
+          description: Successful invoice processing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ResponseCode:
+                    type: string
+                    example: "0"
+                  ResponseMessage:
+                    type: string
+                    example: Invoice successfully processed
+                  DeviceSN:
+                    type: string
+                    example: "1234567890"
+                  InvoiceNumber:
+                    type: string
+                    example: "INV-2026-0001"
+                  GlobalInvoiceNo:
+                    type: string
+                    example: "100452"
+                  FiscalDay:
+                    type: string
+                    example: "24"
+                  VerificationURL:
+                    type: string
+                    example: "https://efms.zimra.co.zw/verify/v1?device=1234567890&rec=100452"
+
+components:
+  securitySchemes:
+    FrappeTokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Format: `token API_KEY:API_SECRET`"
+    CsrfTokenAuth:
+      type: apiKey
+      in: header
+      name: X-Frappe-CSRF-Token
+      description: Session CSRF token from `/api/method/havanozimracloud.api.token`
+

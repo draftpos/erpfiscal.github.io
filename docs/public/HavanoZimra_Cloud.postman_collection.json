@@ -1,0 +1,143 @@
+{
+  "info": {
+    "name": "HavanoZimra Cloud API",
+    "_postman_id": "e4f8b91a-7b3e-4b6a-8452-9b2d8e4f1a2c",
+    "description": "Postman Collection for HavanoZimra Cloud ZIMRA Fiscalization API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get CSRF Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const data = pm.response.json();",
+              "const token = data.token || data.message;",
+              "if (token) {",
+              "    pm.environment.set('csrfToken', token);",
+              "    pm.test('Token received', () => pm.expect(token).to.be.a('string'));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/method/havanozimracloud.api.token",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "method", "havanozimracloud.api.token"]
+        }
+      }
+    },
+    {
+      "name": "2. Ping ZIMRA Server",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "token {{apiKey}}:{{apiSecret}}" },
+          { "key": "X-Frappe-CSRF-Token", "value": "{{csrfToken}}" },
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "device_sn", "value": "{{deviceSn}}", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/method/havanozimracloud.api.pingzimra",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "method", "havanozimracloud.api.pingzimra"]
+        }
+      }
+    },
+    {
+      "name": "3. Send Sales Invoice",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "token {{apiKey}}:{{apiSecret}}" },
+          { "key": "X-Frappe-CSRF-Token", "value": "{{csrfToken}}" },
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "device_sn", "value": "{{deviceSn}}", "type": "text" },
+            { "key": "add_customer", "value": "0", "type": "text" },
+            { "key": "invoice_flag", "value": "0", "type": "text" },
+            { "key": "currency", "value": "USD", "type": "text" },
+            { "key": "invoice_number", "value": "INV-TEST-001", "type": "text" },
+            { "key": "customer_name", "value": "John Doe", "type": "text" },
+            { "key": "trade_name", "value": "JD Traders", "type": "text" },
+            { "key": "customer_vat_number", "value": "12345678", "type": "text" },
+            { "key": "customer_address", "value": "123 Market Street", "type": "text" },
+            { "key": "customer_telephone_number", "value": "+263771234567", "type": "text" },
+            { "key": "customer_tin", "value": "87654321", "type": "text" },
+            { "key": "customer_province", "value": "Harare", "type": "text" },
+            { "key": "customer_street", "value": "Market Street", "type": "text" },
+            { "key": "customer_houseNo", "value": "12", "type": "text" },
+            { "key": "customer_city", "value": "Harare", "type": "text" },
+            { "key": "customer_email", "value": "john@example.com", "type": "text" },
+            { "key": "invoice_comment", "value": "Test sale", "type": "text" },
+            { "key": "original_invoice_no", "value": "", "type": "text" },
+            { "key": "global_invoice_no", "value": "", "type": "text" },
+            { "key": "items_xml", "value": "<ITEMS><ITEM><HH>1</HH><ITEMCODE>99001868</ITEMCODE><ITEMNAME>Milo 500g</ITEMNAME><ITEMNAME2>Milo</ITEMNAME2><QTY>1</QTY><PRICE>6.10</PRICE><TOTAL>6.10</TOTAL><VAT>0.80</VAT><VATR>0.15</VATR><VNAME>VAT</VNAME></ITEM></ITEMS>", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/method/havanozimracloud.api.sendinvoice",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "method", "havanozimracloud.api.sendinvoice"]
+        }
+      }
+    },
+    {
+      "name": "4. Send Credit Note",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "token {{apiKey}}:{{apiSecret}}" },
+          { "key": "X-Frappe-CSRF-Token", "value": "{{csrfToken}}" },
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "device_sn", "value": "{{deviceSn}}", "type": "text" },
+            { "key": "add_customer", "value": "0", "type": "text" },
+            { "key": "invoice_flag", "value": "1", "type": "text" },
+            { "key": "currency", "value": "USD", "type": "text" },
+            { "key": "invoice_number", "value": "CN-TEST-001", "type": "text" },
+            { "key": "customer_name", "value": "John Doe", "type": "text" },
+            { "key": "trade_name", "value": "JD Traders", "type": "text" },
+            { "key": "customer_vat_number", "value": "12345678", "type": "text" },
+            { "key": "customer_address", "value": "123 Market Street", "type": "text" },
+            { "key": "customer_telephone_number", "value": "+263771234567", "type": "text" },
+            { "key": "customer_tin", "value": "87654321", "type": "text" },
+            { "key": "customer_province", "value": "Harare", "type": "text" },
+            { "key": "customer_street", "value": "Market Street", "type": "text" },
+            { "key": "customer_houseNo", "value": "12", "type": "text" },
+            { "key": "customer_city", "value": "Harare", "type": "text" },
+            { "key": "customer_email", "value": "john@example.com", "type": "text" },
+            { "key": "invoice_comment", "value": "Customer return", "type": "text" },
+            { "key": "original_invoice_no", "value": "INV-TEST-001", "type": "text" },
+            { "key": "global_invoice_no", "value": "100452", "type": "text" },
+            { "key": "items_xml", "value": "<ITEMS><ITEM><HH>1</HH><ITEMCODE>99001868</ITEMCODE><ITEMNAME>Milo 500g</ITEMNAME><ITEMNAME2>Milo</ITEMNAME2><QTY>1</QTY><PRICE>6.10</PRICE><TOTAL>6.10</TOTAL><VAT>0.80</VAT><VATR>0.15</VATR><VNAME>VAT</VNAME></ITEM></ITEMS>", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/method/havanozimracloud.api.sendinvoice",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "method", "havanozimracloud.api.sendinvoice"]
+        }
+      }
+    }
+  ]
+}
+

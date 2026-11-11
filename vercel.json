@@ -1,0 +1,7 @@
+{
+  "buildCommand": "pnpm -w run docs:build",
+  "outputDirectory": "docs/.output/public",
+  "framework": "nuxtjs",
+  "installCommand": "pnpm install",
+  "devCommand": "pnpm -w run docs:dev"
+}

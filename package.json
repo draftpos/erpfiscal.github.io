@@ -1,0 +1,39 @@
+{
+  "name": "docus-workspace",
+  "description": "Minimal Documentation theme and CLI for shared usage across Nuxt modules",
+  "version": "5.2.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuxt-content/docus.git"
+  },
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "pnpm run docs:dev",
+    "docs:dev": "cd docs && nuxt dev --no-fork --extends ../layer",
+    "docs:build": "nuxt prepare layer && nuxt build docs --extends ../layer",
+    "build": "pnpm run docs:build",
+    "start": "cd docs && node .output/server/index.mjs",
+    "dev:prepare": "nuxt prepare layer && nuxt prepare docs --extends ../layer",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck layer",
+    "layer:release": "release-it --config .release-it.layer.json && cd layer && npm publish",
+    "cli:release": "release-it --config .release-it.cli.json && cd cli && npm publish",
+    "release": "pnpm run layer:release && pnpm run cli:release && release-it"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "@nuxt/eslint-config": "^1.9.0",
+    "@release-it/bumper": "^7.0.5",
+    "@release-it/conventional-changelog": "^10.0.1",
+    "eslint": "^9.37.0",
+    "nuxt": "4.1.3",
+    "release-it": "^19.0.5",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.1.1"
+  },
+  "resolutions": {
+    "nuxi": "3.28.0"
+  },
+  "packageManager": "pnpm@10.18.3"
+}

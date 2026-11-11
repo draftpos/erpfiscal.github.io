@@ -1,0 +1,23 @@
+{
+  "name": "docus-docs",
+  "description": "Official documentation for Docus, also used as playground.",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.0.1",
+    "@nuxtjs/i18n": "^10.1.1",
+    "@nuxtjs/mdc": "^0.18.0",
+    "@nuxtjs/plausible": "^2.0.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "docus": "workspace:*",
+    "tailwindcss": "^4.1.14",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "nuxt": "4.1.3"
+  }
+}

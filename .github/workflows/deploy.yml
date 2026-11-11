@@ -1,0 +1,76 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile || pnpm install
+
+      - name: Build documentation
+        run: pnpm run docs:build
+        env:
+          NODE_ENV: production
+          NUXT_TELEMETRY_DISABLED: 1
+
+      - name: Prepare static files for GitHub Pages
+        run: |
+          # Prevent GitHub Pages from ignoring directories with leading underscores (e.g. _nuxt, _payload.json)
+          touch docs/.output/public/.nojekyll
+          # Provide 404 fallback for direct deep link routing
+          if [ -f docs/.output/public/en.html ]; then
+            cp docs/.output/public/en.html docs/.output/public/404.html
+          elif [ -f docs/.output/public/index.html ]; then
+            cp docs/.output/public/index.html docs/.output/public/404.html
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.output/public
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
